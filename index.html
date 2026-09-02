@@ -1,2139 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#111827">
 <title>Mon Carnet de Trésorerie</title>
 
 <style>
-*{box-sizing:border-box}
-
-:root{
-  --bg:#f4f6f8;
-  --card:#ffffff;
-  --text:#1f2937;
-  --muted:#6b7280;
-  --line:#e5e7eb;
-  --dark:#111827;
-  --green:#0f766e;
-  --red:#b91c1c;
-  --orange:#b45309;
-}
-
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-}
-
-header{
-  background:var(--dark);
-  color:white;
-  padding:20px 16px;
-  position:sticky;
-  top:0;
-  z-index:10;
-}
-
-.header{
-  max-width:1100px;
-  margin:auto;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-}
-
-h1{
-  margin:0;
-  font-size:22px;
-}
-
-.subtitle{
-  font-size:12px;
-  color:#cbd5e1;
-  margin-top:4px;
-}
-
-main{
-  max-width:1100px;
-  margin:22px auto;
-  padding:0 14px 50px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-}
-
-.card{
-  background:white;
-  border:1px solid var(--line);
-  border-radius:17px;
-  padding:17px;
-  margin-bottom:14px;
-  box-shadow:0 2px 12px rgba(0,0,0,.04);
-}
-
-.label{
-  color:var(--muted);
-  font-size:12px;
-}
-
-.value{
-  font-size:27px;
-  font-weight:760;
-  margin-top:7px;
-}
-
-.green{color:var(--green)}
-.red{color:var(--red)}
-.orange{color:var(--orange)}
-
-button{
-  border:0;
-  border-radius:11px;
-  padding:10px 13px;
-  cursor:pointer;
-  font-weight:680;
-  font-size:14px;
-}
-
-.primary{
-  background:var(--dark);
-  color:white;
-}
-
-.secondary{
-  background:white;
-  color:var(--dark);
-  border:1px solid #d1d5db;
-}
-
-.danger{
-  background:#fee2e2;
-  color:#991b1b;
-}
-
-input,select{
-  width:100%;
-  padding:11px;
-  border:1px solid #d1d5db;
-  border-radius:9px;
-  font-size:14px;
-  background:white;
-}
-
-label{
-  font-size:12px;
-  font-weight:650;
-  display:block;
-  margin-bottom:5px;
-}
-
-form{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.full{
-  grid-column:1/-1;
-}
-
-.hidden{
-  display:none!important;
-}
-
-.actions{
-  display:flex;
-  justify-content:flex-end;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.forecasts{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-top:13px;
-}
-
-.forecast{
-  background:#f8fafc;
-  padding:14px;
-  border-radius:12px;
-}
-
-.forecast strong{
-  display:block;
-  margin-top:5px;
-  font-size:20px;
-}
-
-.toolbar{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin:18px 0 10px;
-  flex-wrap:wrap;
-}
-
-.filters{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.filters input,
-.filters select{
-  width:auto;
-  min-width:145px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th,td{
-  padding:10px 7px;
-  border-bottom:1px solid var(--line);
-  text-align:left;
-  font-size:14px;
-}
-
-th{
-  color:var(--muted);
-  font-size:12px;
-}
-
-.amount{
-  text-align:right;
-  font-weight:720;
-}
-
-.badge{
-  display:inline-block;
-  background:#f3f4f6;
-  border-radius:20px;
-  padding:4px 8px;
-  font-size:11px;
-}
-
-.row-actions{
-  display:flex;
-  gap:5px;
-  justify-content:flex-end;
-  flex-wrap:wrap;
-}
-
-.row-actions button{
-  padding:6px 8px;
-  font-size:12px;
-}
-
-.settings{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:10px;
-  align-items:end;
-}
-
-.upcoming-line{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:9px 0;
-  border-bottom:1px solid var(--line);
-}
-
-.upcoming-line:last-child{
-  border-bottom:0;
-}
-
-.notice{
-  background:#ecfdf5;
-  color:#065f46;
-  padding:11px 13px;
-  border-radius:12px;
-  margin-bottom:14px;
-  font-size:13px;
-}
-
-@media(max-width:900px){
-  .grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .forecasts{
-    grid-template-columns:1fr 1fr;
-  }
-}
-
-@media(max-width:650px){
-  .grid,
-  .forecasts,
-  form{
-    grid-template-columns:1fr;
-  }
-
-  .full{
-    grid-column:auto;
-  }
-
-  .settings{
-    grid-template-columns:1fr;
-  }
-
-  .subtitle{
-    display:none;
-  }
-
-  table,
-  thead,
-  tbody,
-  tr,
-  th,
-  td{
-    display:block;
-  }
-
-  thead{
-    display:none;
-  }
-
-  tr{
-    border-bottom:1px solid var(--line);
-    padding:10px 0;
-  }
-
-  td{
-    border:0;
-    padding:4px 0;
-  }
-
-  td:before{
-    content:attr(data-label) ": ";
-    font-weight:650;
-    color:var(--muted);
-  }
-
-  td.amount{
-    text-align:left;
-  }
-
-  .row-actions{
-    justify-content:flex-start;
-  }
-}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;margin:0;background:#f4f6f8;color:#1f2937}
+header{background:#111827;color:white;padding:18px}
+main{max-width:1000px;margin:auto;padding:18px}
+.card{background:white;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px #0001}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.v{font-size:25px;font-weight:700}
+.g{color:#0f766e}.r{color:#b91c1c}.o{color:#b45309}
+button,input,select{padding:10px;border-radius:9px;border:1px solid #d1d5db;font-size:14px}
+button{cursor:pointer;font-weight:650}
+.p{background:#111827;color:white;border:0}
+.hidden{display:none}
+form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.full{grid-column:1/-1}
+table{width:100%;border-collapse:collapse}
+td,th{padding:8px;border-bottom:1px solid #e5e7eb;text-align:left}
+.amt{text-align:right;font-weight:700}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+@media(max-width:700px){.grid,form{grid-template-columns:1fr}.full{grid-column:auto}}
 </style>
 </head>
 
 <body>
 
 <header>
-<div class="header">
-
+<div class="top">
 <div>
-<h1>Mon Carnet de Trésorerie</h1>
-<div class="subtitle">
-V2 — solde réel, échéances, récurrences et reste à vivre
+<b>Mon Carnet de Trésorerie</b>
+<div style="font-size:12px;color:#cbd5e1">V3 synchronisée Mac ↔ iPhone</div>
 </div>
+<div id="u" class="hidden">
+<span id="email"></span>
+<button onclick="logout()">Déconnexion</button>
 </div>
-
-<button class="secondary" onclick="newOperation()">
-+ Ajouter
-</button>
-
 </div>
 </header>
 
+<main><section id="login" class="card" style="max-width:420px;margin:40px auto">
+<h2>Connexion</h2>
+<p>Connectez-vous pour retrouver votre trésorerie sur tous vos appareils.</p>
 
-<main>
+<input id="le" type="email" placeholder="Adresse e-mail"
+style="width:100%;margin-bottom:8px">
 
-<div id="migrationNotice" class="notice hidden">
-Vos données de la première version ont été reprises automatiquement.
-</div>
+<input id="lp" type="password" placeholder="Mot de passe"
+style="width:100%;margin-bottom:8px">
 
+<button class="p" style="width:100%" onclick="connect()">
+Se connecter
+</button>
 
-<section class="grid">
-
-<div class="card">
-<div class="label">Solde actuel</div>
-<div id="balance" class="value">0 €</div>
-</div>
-
-<div class="card">
-<div class="label">Entrées ce mois</div>
-<div id="income" class="value green">0 €</div>
-</div>
-
-<div class="card">
-<div class="label">Sorties ce mois</div>
-<div id="expenses" class="value red">0 €</div>
-</div>
-
-<div class="card">
-<div class="label">Reste à vivre fin de mois</div>
-<div id="monthEnd" class="value orange">0 €</div>
-</div>
-
+<div id="lm" style="margin-top:10px;color:#b91c1c"></div>
 </section>
 
 
-<section class="card">
-
-<strong>Prévision de trésorerie</strong>
-
-<div class="forecasts">
-
-<div class="forecast">
-<span class="label">Dans 7 jours</span>
-<strong id="f7">0 €</strong>
-</div>
-
-<div class="forecast">
-<span class="label">Dans 15 jours</span>
-<strong id="f15">0 €</strong>
-</div>
-
-<div class="forecast">
-<span class="label">Dans 30 jours</span>
-<strong id="f30">0 €</strong>
-</div>
-
-<div class="forecast">
-<span class="label">Sorties prévues sur 30 jours</span>
-<strong id="plannedOut">0 €</strong>
-</div>
-
-</div>
-
-</section>
-
-
-<section id="formBox" class="card hidden">
-
-<h3 id="formTitle">Nouvelle opération</h3>
-
-<form id="operationForm">
-
-<input type="hidden" id="editId">
-
-<div>
-<label>Entrée ou sortie</label>
-<select id="type">
-<option value="expense">Sortie</option>
-<option value="income">Entrée</option>
-</select>
-</div>
-
-<div>
-<label>Montant (€)</label>
-<input id="amount" type="number" min="0.01" step="0.01" required>
-</div>
-
-<div>
-<label>Date</label>
-<input id="date" type="date" required>
-</div>
-
-<div>
-<label>Catégorie</label>
-<select id="category">
-<option>Alimentation</option>
-<option>Maison</option>
-<option>Voiture</option>
-<option>Restaurant</option>
-<option>Santé</option>
-<option>Loisirs</option>
-<option>Abonnements</option>
-<option>Impôts / Taxes</option>
-<option>Revenus</option>
-<option>Virement</option>
-<option>Autre</option>
-</select>
-</div>
-
-<div class="full">
-<label>Libellé</label>
-<input id="description"
-placeholder="Ex : Courses, salaire, assurance..."
-required>
-</div>
-
-<div>
-<label>Statut</label>
-<select id="status">
-<option value="done">Déjà passé sur mon compte</option>
-<option value="planned">À venir</option>
-</select>
-</div>
-
-<div>
-<label>Récurrence</label>
-<select id="recurrence">
-<option value="none">Aucune</option>
-<option value="monthly">Tous les mois</option>
-</select>
-</div>
-
-<div class="full actions">
-
-<button type="button"
-class="secondary"
-onclick="closeForm()">
-Annuler
-</button>
-
-<button class="primary">
-Enregistrer
-</button>
-
-</div>
-
-</form>
-</section>
-
-
-<div class="toolbar">
-
-<h3 style="margin:0">
-Mon carnet de bord
-</h3>
-
-<div class="filters">
-
-<select id="filterType" onchange="render()">
-<option value="all">Toutes</option>
-<option value="income">Entrées</option>
-<option value="expense">Sorties</option>
-</select>
-
-<select id="filterStatus" onchange="render()">
-<option value="all">Passées + prévues</option>
-<option value="done">Passées</option>
-<option value="planned">À venir</option>
-</select>
-
-<input id="search"
-placeholder="Rechercher..."
-oninput="render()">
-
-</div>
-
-</div>
-
-
-<section class="card">
-
-<table>
-
-<thead>
-
-<tr>
-<th>Date</th>
-<th>Libellé</th>
-<th>Catégorie</th>
-<th>Statut</th>
-<th class="amount">Montant</th>
-<th></th>
-</tr>
-
-</thead>
-
-<tbody id="list"></tbody>
-
-</table>
-
-<p id="empty"
-style="text-align:center;color:#6b7280">
-Aucune opération enregistrée.
-</p>
-
-</section>
-
-
-<section class="card">
-
-<h3>Prochaines échéances</h3>
-
-<div id="upcomingList"></div>
-
-</section>
-
-
-<section class="card">
-
-<h3>Réglages et sauvegarde</h3>
-
-<div class="settings">
-
-<div>
-<label>Solde de départ du compte</label>
-<input id="opening"
-type="number"
-step="0.01">
-</div>
-
-<button class="primary"
-onclick="saveOpening()">
-Enregistrer
-</button>
-
-</div>
-
-
-<div class="actions"
-style="justify-content:flex-start;margin-top:15px">
-
-<button class="secondary"
-onclick="downloadBackup()">
-Sauvegarder mes données
-</button>
-
-<label class="secondary"
-style="padding:10px 13px;border-radius:11px;cursor:pointer;margin:0">
-
-Restaurer
-
-<input
-type="file"
-accept=".json,application/json"
-onchange="restoreBackup(event)"
-style="display:none">
-
-</label>
-
-<button class="secondary"
-onclick="exportCSV()">
-Exporter CSV
-</button>
-
-</div>
-
-<p style="font-size:12px;color:#6b7280">
-Les données restent pour le moment enregistrées dans ce navigateur.
-La synchronisation Mac ↔ iPhone viendra dans une prochaine étape.
-</p>
-
-</section>
-
-</main>
-
-
-<script>
-
-const KEY = "monCarnetTresorerieV2";
-const OLD_KEY = "monCarnetTresorerie";
-
-let migrated = false;
-
-
-function loadData(){
-
-  const existing =
-    localStorage.getItem(KEY);
-
-  if(existing){
-    return JSON.parse(existing);
-  }
-
-  const old =
-    localStorage.getItem(OLD_KEY);
-
-  if(old){
-
-    migrated = true;
-
-    const previous =
-      JSON.parse(old);
-
-    previous.transactions =
-      (previous.transactions || [])
-      .map(t => ({
-        ...t,
-        id:String(t.id || createId()),
-        recurrence:t.recurrence || "none"
-      }));
-
-    localStorage.setItem(
-      KEY,
-      JSON.stringify(previous)
-    );
-
-    return previous;
-  }
-
-  return {
-    opening:0,
-    transactions:[]
-  };
-}
-
-
-function createId(){
-  return Date.now().toString(36) +
-    Math.random().toString(36).slice(2,8);
-}
-
-
-let data = loadData();
-
-
-if(migrated){
-
-  document
-  .getElementById("migrationNotice")
-  .classList.remove("hidden");
-
-}
-
-
-const euro = value =>
-  new Intl.NumberFormat(
-    "fr-FR",
-    {
-      style:"currency",
-      currency:"EUR"
-    }
-  ).format(Number(value) || 0);
-
-
-function todayISO(){
-
-  return new Date()
-  .toISOString()
-  .slice(0,10);
-
-}
-
-
-function asDate(value){
-
-  return new Date(
-    value + "T12:00:00"
-  );
-
-}
-
-
-function signed(t){
-
-  return t.type === "income"
-    ? Number(t.amount)
-    : -Number(t.amount);
-
-}
-
-
-function save(){
-
-  localStorage.setItem(
-    KEY,
-    JSON.stringify(data)
-  );
-
-}
-
-
-document
-.getElementById("date")
-.value = todayISO();
-
-
-document
-.getElementById("opening")
-.value = data.opening || 0;
-
-
-function addMonths(date, number){
-
-  const result =
-    new Date(date);
-
-  const originalDay =
-    result.getDate();
-
-  result.setDate(1);
-
-  result.setMonth(
-    result.getMonth() + number
-  );
-
-  const maximumDay =
-    new Date(
-      result.getFullYear(),
-      result.getMonth() + 1,
-      0
-    ).getDate();
-
-  result.setDate(
-    Math.min(
-      originalDay,
-      maximumDay
-    )
-  );
-
-  return result;
-}
-
-
-function dateISO(date){
-
-  return date
-  .toISOString()
-  .slice(0,10);
-
-}
-
-
-function ensureRecurring(){
-
-  const roots =
-    data.transactions.filter(
-      t =>
-        t.recurrence === "monthly"
-        &&
-        !t.seriesRoot
-    );
-
-  const horizon =
-    addMonths(
-      new Date(),
-      12
-    );
-
-
-  roots.forEach(root => {
-
-    const base =
-      asDate(root.date);
-
-
-    for(
-      let i = 1;
-      i <= 18;
-      i++
-    ){
-
-      const next =
-        addMonths(
-          base,
-          i
-        );
-
-      if(next > horizon){
-        break;
-      }
-
-      const key =
-        root.id +
-        "_" +
-        dateISO(next);
-
-
-      const alreadyExists =
-        data.transactions.some(
-          t =>
-            t.generatedKey === key
-        );
-
-
-      if(!alreadyExists){
-
-        data.transactions.push({
-
-          id:createId(),
-
-          type:root.type,
-
-          amount:root.amount,
-
-          date:dateISO(next),
-
-          category:root.category,
-
-          description:root.description,
-
-          status:"planned",
-
-          recurrence:"none",
-
-          seriesRoot:root.id,
-
-          generatedKey:key
-
-        });
-
-      }
-
-    }
-
-  });
-
-  save();
-}
-
-
-ensureRecurring();
-
-
-function currentBalance(){
-
-  return Number(
-    data.opening || 0
-  )
-
-  +
-
-  data.transactions
-  .filter(
-    t => t.status === "done"
-  )
-  .reduce(
-    (sum,t) =>
-      sum + signed(t),
-    0
-  );
-
-}
-
-
-function forecast(days){
-
-  let total =
-    currentBalance();
-
-  const today =
-    new Date();
-
-  today.setHours(
-    0,0,0,0
-  );
-
-
-  const limit =
-    new Date(today);
-
-  limit.setDate(
-    limit.getDate() + days
-  );
-
-
-  data.transactions
-  .filter(
-    t => t.status === "planned"
-  )
-  .forEach(t => {
-
-    const operationDate =
-      asDate(t.date);
-
-    if(
-      operationDate >= today
-      &&
-      operationDate <= limit
-    ){
-
-      total += signed(t);
-
-    }
-
-  });
-
-
-  return total;
-}
-
-
-function endOfMonthForecast(){
-
-  let total =
-    currentBalance();
-
-  const today =
-    new Date();
-
-  today.setHours(
-    0,0,0,0
-  );
-
-
-  const end =
-    new Date(
-      today.getFullYear(),
-      today.getMonth() + 1,
-      0
-    );
-
-
-  data.transactions
-  .filter(
-    t => t.status === "planned"
-  )
-  .forEach(t => {
-
-    const operationDate =
-      asDate(t.date);
-
-    if(
-      operationDate >= today
-      &&
-      operationDate <= end
-    ){
-
-      total += signed(t);
-
-    }
-
-  });
-
-
-  return total;
-}
-
-
-function monthTotals(){
-
-  const now =
-    new Date();
-
-  let income = 0;
-  let expenses = 0;
-
-
-  data.transactions
-  .filter(
-    t => t.status === "done"
-  )
-  .forEach(t => {
-
-    const operationDate =
-      asDate(t.date);
-
-
-    if(
-      operationDate.getMonth()
-        === now.getMonth()
-      &&
-      operationDate.getFullYear()
-        === now.getFullYear()
-    ){
-
-      if(
-        t.type === "income"
-      ){
-
-        income += Number(t.amount);
-
-      }else{
-
-        expenses += Number(t.amount);
-
-      }
-
-    }
-
-  });
-
-
-  return {
-    income,
-    expenses
-  };
-}
-
-
-function newOperation(){
-
-  document
-  .getElementById("operationForm")
-  .reset();
-
-  document
-  .getElementById("editId")
-  .value = "";
-
-  document
-  .getElementById("formTitle")
-  .textContent =
-  "Nouvelle opération";
-
-  document
-  .getElementById("date")
-  .value = todayISO();
-
-  document
-  .getElementById("formBox")
-  .classList.remove("hidden");
-
-}
-
-
-function closeForm(){
-
-  document
-  .getElementById("formBox")
-  .classList.add("hidden");
-
-}
-
-
-document
-.getElementById("operationForm")
-.addEventListener(
-  "submit",
-  function(event){
-
-    event.preventDefault();
-
-
-    const editId =
-      document
-      .getElementById("editId")
-      .value;
-
-
-    const existing =
-      data.transactions.find(
-        t => t.id === editId
-      );
-
-
-    const operation = {
-
-      id:
-        editId ||
-        createId(),
-
-      type:
-        document
-        .getElementById("type")
-        .value,
-
-      amount:
-        Number(
-          document
-          .getElementById("amount")
-          .value
-        ),
-
-      date:
-        document
-        .getElementById("date")
-        .value,
-
-      category:
-        document
-        .getElementById("category")
-        .value,
-
-      description:
-        document
-        .getElementById("description")
-        .value
-        .trim(),
-
-      status:
-        document
-        .getElementById("status")
-        .value,
-
-      recurrence:
-        document
-        .getElementById("recurrence")
-        .value,
-
-      seriesRoot:
-        existing
-        ? existing.seriesRoot || null
-        : null,
-
-      generatedKey:
-        existing
-        ? existing.generatedKey || null
-        : null
-
-    };
-
-
-    if(editId){
-
-      data.transactions =
-        data.transactions.map(
-          t =>
-            t.id === editId
-            ? operation
-            : t
-        );
-
-    }else{
-
-      data.transactions.push(
-        operation
-      );
-
-    }
-
-
-    save();
-
-    ensureRecurring();
-
-    closeForm();
-
-    render();
-
-  }
-);
-
-
-function editOperation(id){
-
-  const t =
-    data.transactions.find(
-      operation =>
-        operation.id === id
-    );
-
-
-  if(!t){
-    return;
-  }
-
-
-  document
-  .getElementById("editId")
-  .value = t.id;
-
-  document
-  .getElementById("type")
-  .value = t.type;
-
-  document
-  .getElementById("amount")
-  .value = t.amount;
-
-  document
-  .getElementById("date")
-  .value = t.date;
-
-  document
-  .getElementById("category")
-  .value = t.category;
-
-  document
-  .getElementById("description")
-  .value = t.description;
-
-  document
-  .getElementById("status")
-  .value = t.status;
-
-  document
-  .getElementById("recurrence")
-  .value =
-    t.recurrence || "none";
-
-
-  document
-  .getElementById("formTitle")
-  .textContent =
-    "Modifier l'opération";
-
-
-  document
-  .getElementById("formBox")
-  .classList.remove("hidden");
-
-
-  window.scrollTo({
-    top:
-      document
-      .getElementById("formBox")
-      .offsetTop - 80,
-
-    behavior:"smooth"
-  });
-
-}
-
-
-function markDone(id){
-
-  const t =
-    data.transactions.find(
-      operation =>
-        operation.id === id
-    );
-
-
-  if(!t){
-    return;
-  }
-
-
-  t.status = "done";
-
-  save();
-
-  render();
-
-}
-
-
-function deleteOperation(id){
-
-  if(
-    !confirm(
-      "Supprimer cette opération ?"
-    )
-  ){
-    return;
-  }
-
-
-  data.transactions =
-    data.transactions.filter(
-      t =>
-        t.id !== id
-        &&
-        t.seriesRoot !== id
-    );
-
-
-  save();
-
-  render();
-
-}
-
-
-function saveOpening(){
-
-  data.opening =
-    Number(
-      document
-      .getElementById("opening")
-      .value
-    )
-    || 0;
-
-
-  save();
-
-  render();
-
-  alert(
-    "Solde de départ enregistré."
-  );
-
-}
-
-
-function escapeHTML(value){
-
-  return String(value)
-  .replace(
-    /[&<>"']/g,
-    character => ({
-      "&":"&amp;",
-      "<":"&lt;",
-      ">":"&gt;",
-      '"':"&quot;",
-      "'":"&#039;"
-    }[character])
-  );
-
-}
-
-
-function render(){
-
-  ensureRecurring();
-
-
-  const totals =
-    monthTotals();
-
-
-  document
-  .getElementById("balance")
-  .textContent =
-    euro(
-      currentBalance()
-    );
-
-
-  document
-  .getElementById("income")
-  .textContent =
-    euro(
-      totals.income
-    );
-
-
-  document
-  .getElementById("expenses")
-  .textContent =
-    euro(
-      totals.expenses
-    );
-
-
-  document
-  .getElementById("monthEnd")
-  .textContent =
-    euro(
-      endOfMonthForecast()
-    );
-
-
-  document
-  .getElementById("f7")
-  .textContent =
-    euro(
-      forecast(7)
-    );
-
-
-  document
-  .getElementById("f15")
-  .textContent =
-    euro(
-      forecast(15)
-    );
-
-
-  document
-  .getElementById("f30")
-  .textContent =
-    euro(
-      forecast(30)
-    );
-
-
-  const now =
-    new Date();
-
-  now.setHours(
-    0,0,0,0
-  );
-
-
-  const limit =
-    new Date(now);
-
-  limit.setDate(
-    limit.getDate() + 30
-  );
-
-
-  const upcoming =
-    data.transactions
-    .filter(
-      t => t.status === "planned"
-    )
-    .filter(t => {
-
-      const operationDate =
-        asDate(t.date);
-
-      return (
-        operationDate >= now
-        &&
-        operationDate <= limit
-      );
-
-    });
-
-
-  const plannedExpenses =
-    upcoming
-    .filter(
-      t => t.type === "expense"
-    )
-    .reduce(
-      (sum,t) =>
-        sum + Number(t.amount),
-      0
-    );
-
-
-  document
-  .getElementById("plannedOut")
-  .textContent =
-    euro(plannedExpenses);
-
-
-  const filterType =
-    document
-    .getElementById("filterType")
-    .value;
-
-
-  const filterStatus =
-    document
-    .getElementById("filterStatus")
-    .value;
-
-
-  const search =
-    document
-    .getElementById("search")
-    .value
-    .toLowerCase()
-    .trim();
-
-
-  const rows =
-    [...data.transactions]
-    .filter(t =>
-      filterType === "all"
-      ||
-      t.type === filterType
-    )
-    .filter(t =>
-      filterStatus === "all"
-      ||
-      t.status === filterStatus
-    )
-    .filter(t =>
-      !search
-      ||
-      (
-        t.description +
-        " " +
-        t.category
-      )
-      .toLowerCase()
-      .includes(search)
-    )
-    .sort(
-      (a,b) =>
-        b.date.localeCompare(
-          a.date
-        )
-    );
-
-
-  const list =
-    document
-    .getElementById("list");
-
-
-  list.innerHTML = "";
-
-
-  rows.forEach(t => {
-
-    const tr =
-      document.createElement("tr");
-
-
-    const recurrenceBadge =
-      t.recurrence === "monthly"
-      ? '<span class="badge">mensuel</span>'
-      :
-      t.seriesRoot
-      ? '<span class="badge">récurrent</span>'
-      :
-      "";
-
-
-    const doneButton =
-      t.status === "planned"
-      ?
-      `<button
-        class="secondary"
-        onclick="markDone('${t.id}')">
-        Débité
-      </button>`
-      :
-      "";
-
-
-    tr.innerHTML = `
-
-      <td data-label="Date">
-        ${
-          asDate(t.date)
-          .toLocaleDateString("fr-FR")
-        }
-      </td>
-
-      <td data-label="Libellé">
-        <strong>
-          ${escapeHTML(t.description)}
-        </strong>
-        ${recurrenceBadge}
-      </td>
-
-      <td data-label="Catégorie">
-        ${escapeHTML(t.category)}
-      </td>
-
-      <td data-label="Statut">
-        <span class="badge">
-          ${
-            t.status === "done"
-            ? "Passé"
-            : "À venir"
-          }
-        </span>
-      </td>
-
-      <td
-        data-label="Montant"
-        class="amount ${
-          t.type === "income"
-          ? "green"
-          : "red"
-        }">
-
-        ${
-          t.type === "income"
-          ? "+"
-          : "−"
-        }
-
-        ${euro(t.amount)}
-
-      </td>
-
-      <td data-label="Actions">
-
-        <div class="row-actions">
-
-          ${doneButton}
-
-          <button
-            class="secondary"
-            onclick="editOperation('${t.id}')">
-            Modifier
-          </button>
-
-          <button
-            class="danger"
-            onclick="deleteOperation('${t.id}')">
-            ×
-          </button>
-
-        </div>
-
-      </td>
-
-    `;
-
-
-    list.appendChild(tr);
-
-  });
-
-
-  document
-  .getElementById("empty")
-  .style.display =
-    rows.length
-    ? "none"
-    : "block";
-
-
-  const upcomingList =
-    document
-    .getElementById("upcomingList");
-
-
-  upcomingList.innerHTML = "";
-
-
-  const next =
-    [...upcoming]
-    .sort(
-      (a,b) =>
-        a.date.localeCompare(
-          b.date
-        )
-    )
-    .slice(0,7);
-
-
-  if(!next.length){
-
-    upcomingList.innerHTML =
-      '<div class="label">Aucune échéance prévue dans les 30 prochains jours.</div>';
-
-  }else{
-
-    next.forEach(t => {
-
-      const line =
-        document.createElement("div");
-
-      line.className =
-        "upcoming-line";
-
-
-      line.innerHTML = `
-
-        <span>
-          ${
-            asDate(t.date)
-            .toLocaleDateString("fr-FR")
-          }
-          —
-          ${escapeHTML(t.description)}
-        </span>
-
-        <strong class="${
-          t.type === "expense"
-          ? "red"
-          : "green"
-        }">
-
-          ${
-            t.type === "expense"
-            ? "−"
-            : "+"
-          }
-
-          ${euro(t.amount)}
-
-        </strong>
-
-      `;
-
-
-      upcomingList
-      .appendChild(line);
-
-    });
-
-  }
-
-}
-
-
-function downloadBackup(){
-
-  const blob =
-    new Blob(
-      [
-        JSON.stringify(
-          data,
-          null,
-          2
-        )
-      ],
-      {
-        type:"application/json"
-      }
-    );
-
-
-  const link =
-    document.createElement("a");
-
-
-  link.href =
-    URL.createObjectURL(blob);
-
-
-  link.download =
-    "sauvegarde-tresorerie-v2.json";
-
-
-  link.click();
-
-
-  URL.revokeObjectURL(
-    link.href
-  );
-
-}
-
-
-function restoreBackup(event){
-
-  const file =
-    event.target.files[0];
-
-
-  if(!file){
-    return;
-  }
-
-
-  const reader =
-    new FileReader();
-
-
-  reader.onload =
-    function(){
-
-      try{
-
-        const restored =
-          JSON.parse(
-            reader.result
-          );
-
-
-        if(
-          !Array.isArray(
-            restored.transactions
-          )
-        ){
-          throw new Error();
-        }
-
-
-        data = restored;
-
-        save();
-
-        document
-        .getElementById("opening")
-        .value =
-          data.opening || 0;
-
-
-        render();
-
-
-        alert(
-          "Sauvegarde restaurée."
-        );
-
-      }catch(error){
-
-        alert(
-          "Ce fichier de sauvegarde n'est pas valide."
-        );
-
-      }
-
-    };
-
-
-  reader.readAsText(file);
-
-}
-
-
-function exportCSV(){
-
-  let csv =
-    "Date;Type;Montant;Categorie;Libelle;Statut;Recurrence\n";
-
-
-  data.transactions
-  .forEach(t => {
-
-    const description =
-      String(t.description)
-      .replaceAll(
-        '"',
-        '""'
-      );
-
-
-    csv +=
-      `${t.date};${t.type};${t.amount};${t.category};"${description}";${t.status};${t.recurrence || "none"}\n`;
-
-  });
-
-
-  const blob =
-    new Blob(
-      [
-        "\ufeff" + csv
-      ],
-      {
-        type:"text/csv;charset=utf-8"
-      }
-    );
-
-
-  const link =
-    document.createElement("a");
-
-
-  link.href =
-    URL.createObjectURL(blob);
-
-
-  link.download =
-    "carnet-tresorerie.csv";
-
-
-  link.click();
-
-
-  URL.revokeObjectURL(
-    link.href
-  );
-
-}
-
-
-render();
-
-</script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mon Carnet de Trésorerie</title>
-
-<style>
-* { box-sizing:border-box; }
-
-body {
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  background:#f4f6f8;
-  color:#1f2937;
-}
-
-header {
-  background:#111827;
-  color:white;
-  padding:22px;
-}
-
-.header {
-  max-width:1100px;
-  margin:auto;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-h1 { margin:0; font-size:23px; }
-header p { margin:5px 0 0; color:#cbd5e1; font-size:13px; }
-
-main {
-  max-width:1100px;
-  margin:25px auto;
-  padding:0 15px 50px;
-}
-
-.grid {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
-}
-
-.card {
-  background:white;
-  border-radius:16px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:0 2px 12px rgba(0,0,0,.06);
-}
-
-.label {
-  color:#6b7280;
-  font-size:13px;
-}
-
-.value {
-  font-size:28px;
-  font-weight:750;
-  margin-top:7px;
-}
-
-.green { color:#0f766e; }
-.red { color:#b91c1c; }
-.orange { color:#b45309; }
-
-button {
-  border:0;
-  border-radius:11px;
-  padding:11px 15px;
-  cursor:pointer;
-  font-weight:650;
-  font-size:14px;
-}
-
-.primary {
-  background:#111827;
-  color:white;
-}
-
-.secondary {
-  background:white;
-  border:1px solid #d1d5db;
-}
-
-.add {
-  background:white;
-  color:#111827;
-}
-
-form {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-input,select {
-  width:100%;
-  padding:11px;
-  border:1px solid #d1d5db;
-  border-radius:9px;
-  font-size:14px;
-}
-
-label {
-  font-size:12px;
-  font-weight:650;
-  display:block;
-  margin-bottom:5px;
-}
-
-.full { grid-column:1/-1; }
-
-.hidden { display:none; }
-
-.forecasts {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-}
-
-.forecast {
-  background:#f8fafc;
-  padding:15px;
-  border-radius:12px;
-}
-
-.forecast strong {
-  font-size:21px;
-  display:block;
-  margin-top:5px;
-}
-
-table {
-  width:100%;
-  border-collapse:collapse;
-}
-
-th,td {
-  padding:11px 7px;
-  border-bottom:1px solid #e5e7eb;
-  text-align:left;
-}
-
-th {
-  color:#6b7280;
-  font-size:12px;
-}
-
-.amount {
-  text-align:right;
-  font-weight:700;
-}
-
-.toolbar {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:20px 0 12px;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.delete {
-  background:#fee2e2;
-  color:#991b1b;
-  padding:6px 9px;
-}
-
-.badge {
-  background:#f3f4f6;
-  border-radius:20px;
-  padding:4px 8px;
-  font-size:11px;
-}
-
-.actions {
-  display:flex;
-  justify-content:flex-end;
-  gap:8px;
-}
-
-.settings {
-  display:flex;
-  gap:10px;
-  align-items:end;
-}
-
-.settings div { flex:1; }
-
-@media(max-width:800px) {
-  .grid { grid-template-columns:1fr 1fr; }
-}
-
-@media(max-width:600px) {
-  .grid,.forecasts { grid-template-columns:1fr; }
-  form { grid-template-columns:1fr; }
-  .full { grid-column:auto; }
-  .settings { display:block; }
-  .settings button { margin-top:10px; }
-}
-</style>
-</head>
-
-<body>
-
-<header>
-<div class="header">
-
-<div>
-<h1>Mon Carnet de Trésorerie</h1>
-<p>Ce qui entre, ce qui sort et ce qu'il me reste réellement.</p>
-</div>
-
-<button class="add" onclick="openForm()">
-+ Ajouter une opération
-</button>
-
-</div>
-</header>
-
-<main>
+<section id="app" class="hidden">
 
 <div class="grid">
 
 <div class="card">
-<div class="label">Solde actuel</div>
-<div class="value" id="balance">0 €</div>
+<small>Solde actuel</small>
+<div id="bal" class="v">0 €</div>
 </div>
 
 <div class="card">
-<div class="label">Entrées ce mois</div>
-<div class="value green" id="income">0 €</div>
+<small>Entrées ce mois</small>
+<div id="inc" class="v g">0 €</div>
 </div>
 
 <div class="card">
-<div class="label">Sorties ce mois</div>
-<div class="value red" id="expenses">0 €</div>
+<small>Sorties ce mois</small>
+<div id="out" class="v r">0 €</div>
 </div>
 
 <div class="card">
-<div class="label">Disponible dans 30 jours</div>
-<div class="value orange" id="available">0 €</div>
+<small>Fin de mois</small>
+<div id="endm" class="v o">0 €</div>
 </div>
 
 </div>
@@ -2141,56 +90,62 @@ th {
 
 <div class="card">
 
-<strong>Prévision de trésorerie</strong>
+<h3>Prévision de trésorerie</h3>
 
-<div class="forecasts" style="margin-top:15px">
-
-<div class="forecast">
-<span class="label">Dans 7 jours</span>
-<strong id="f7">0 €</strong>
-</div>
-
-<div class="forecast">
-<span class="label">Dans 15 jours</span>
-<strong id="f15">0 €</strong>
-</div>
-
-<div class="forecast">
-<span class="label">Dans 30 jours</span>
-<strong id="f30">0 €</strong>
-</div>
-
-</div>
-</div>
-
-
-<div id="formBox" class="card hidden">
-
-<h3>Nouvelle opération</h3>
-
-<form id="form">
+<div class="grid">
 
 <div>
-<label>Entrée ou sortie</label>
+<small>Dans 7 jours</small>
+<div id="f7" class="v">0 €</div>
+</div>
+
+<div>
+<small>Dans 15 jours</small>
+<div id="f15" class="v">0 €</div>
+</div>
+
+<div>
+<small>Dans 30 jours</small>
+<div id="f30" class="v">0 €</div>
+</div>
+
+<div>
+<small>Sorties prévues 30 jours</small>
+<div id="po" class="v r">0 €</div>
+</div>
+
+</div>
+</div>
+
+
+<div class="card">
+
+<div class="top">
+<h3>Opérations</h3>
+
+<button class="p" onclick="newOp()">
++ Ajouter une opération
+</button>
+</div>
+
+
+<div id="form" class="hidden">
+
+<form onsubmit="saveOp(event)">
+
+<input type="hidden" id="id">
+
 <select id="type">
 <option value="expense">Sortie</option>
 <option value="income">Entrée</option>
 </select>
-</div>
 
-<div>
-<label>Montant €</label>
-<input id="amount" type="number" step="0.01" required>
-</div>
+<input id="amount" type="number" step="0.01"
+placeholder="Montant €" required>
 
-<div>
-<label>Date</label>
 <input id="date" type="date" required>
-</div>
 
-<div>
-<label>Catégorie</label>
-<select id="category">
+<select id="cat">
 <option>Alimentation</option>
 <option>Maison</option>
 <option>Voiture</option>
@@ -2203,78 +158,53 @@ th {
 <option>Virement</option>
 <option>Autre</option>
 </select>
-</div>
 
-<div class="full">
-<label>Libellé</label>
-<input id="description"
-placeholder="Ex : Courses Carrefour, salaire, assurance..."
-required>
-</div>
+<input id="desc" class="full"
+placeholder="Libellé de l'opération" required>
 
-<div>
-<label>Statut</label>
 <select id="status">
-<option value="done">Déjà passé sur mon compte</option>
+<option value="done">Déjà passé sur le compte</option>
 <option value="planned">À venir</option>
 </select>
-</div>
 
-<div>
-<label>Récurrence</label>
-<select id="recurrence">
-<option value="none">Aucune</option>
+<select id="rec">
+<option value="none">Aucune récurrence</option>
 <option value="monthly">Tous les mois</option>
 </select>
-</div>
 
 <div class="full actions">
-<button type="button" class="secondary"
-onclick="closeForm()">Annuler</button>
-
-<button class="primary">Enregistrer</button>
+<button type="button" onclick="closeOp()">Annuler</button>
+<button class="p">Enregistrer</button>
 </div>
 
 </form>
-</div>
-
-
-<div class="toolbar">
-<h3>Mon carnet de bord</h3>
-
-<div>
-<button class="secondary"
-onclick="downloadBackup()">Sauvegarder</button>
-
-<button class="secondary"
-onclick="exportCSV()">Exporter CSV</button>
-</div>
-</div>
-
-
-<div class="card">
-
-<table>
-
+</div><table>
 <thead>
 <tr>
 <th>Date</th>
 <th>Libellé</th>
-<th>Catégorie</th>
 <th>Statut</th>
-<th class="amount">Montant</th>
-<th></th>
+<th class="amt">Montant</th>
+<th>Actions</th>
 </tr>
 </thead>
-
 <tbody id="list"></tbody>
-
 </table>
 
-<p id="empty"
-style="text-align:center;color:#6b7280">
-Aucune opération enregistrée.
+</div>
+
+
+<div id="migrate" class="card hidden">
+
+<h3>Importer mes données V2</h3>
+
+<p>
+Des données de votre ancienne version ont été détectées sur ce Mac.
 </p>
+
+<button class="p" onclick="migrateV2()">
+Importer mes données V2 dans le cloud
+</button>
 
 </div>
 
@@ -2283,380 +213,623 @@ Aucune opération enregistrée.
 
 <h3>Réglages</h3>
 
-<div class="settings">
+<p>
+<small>Solde de départ du compte</small>
+</p>
 
-<div>
-<label>Solde de départ de mon compte</label>
+<div class="actions">
+
 <input id="opening"
 type="number"
 step="0.01"
-placeholder="Ex : 3500">
-</div>
+placeholder="Solde de départ">
 
-<button class="primary"
-onclick="saveOpening()">
+<button class="p" onclick="saveOpening()">
 Enregistrer le solde
+</button>
+
+<button onclick="load()">
+↻ Synchroniser
 </button>
 
 </div>
 
-<p style="font-size:12px;color:#6b7280">
-Indiquez ici le solde réel de votre compte au moment où vous commencez à utiliser le carnet.
-</p>
-
 </div>
+
+</section>
 
 </main>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 
-const KEY="monCarnetTresorerie";
+const sb = supabase.createClient(
+"https://whulgtdpkcxgbmrbjnto.supabase.co",
+"sb_publishable_mMNuqsAmsquMyh5UzeuM4A_c16ujcSE"
+);
 
-let data=JSON.parse(localStorage.getItem(KEY)) || {
- opening:0,
- transactions:[]
+let user = null;
+
+let d = {
+opening:0,
+transactions:[]
 };
 
-const euro=n =>
- new Intl.NumberFormat("fr-FR",{
- style:"currency",
- currency:"EUR"
- }).format(n || 0);
 
-document.getElementById("date").value =
- new Date().toISOString().slice(0,10);
-
-document.getElementById("opening").value =
- data.opening || 0;
+const E = n =>
+new Intl.NumberFormat(
+"fr-FR",
+{
+style:"currency",
+currency:"EUR"
+}
+).format(+n || 0);
 
 
-function save(){
- localStorage.setItem(KEY,JSON.stringify(data));
+const D = s =>
+new Date(s + "T12:00:00");
+
+
+const S = t =>
+t.type === "income"
+? +t.amount
+: -t.amount;
+
+
+async function init(){
+
+const {data:x} =
+await sb.auth.getSession();
+
+if(x.session){
+
+user = x.session.user;
+
+show();
+
+await load();
+
+}
+
 }
 
 
-function openForm(){
- document.getElementById("formBox")
- .classList.remove("hidden");
-}
+async function connect(){
 
+lm.textContent = "Connexion...";
 
-function closeForm(){
- document.getElementById("formBox")
- .classList.add("hidden");
-}
+const {data,error} =
+await sb.auth.signInWithPassword({
 
+email:le.value.trim(),
 
-function saveOpening(){
-
- data.opening =
- Number(document.getElementById("opening").value) || 0;
-
- save();
- render();
-
- alert("Solde de départ enregistré.");
-}
-
-
-document.getElementById("form")
-.addEventListener("submit",function(e){
-
- e.preventDefault();
-
- const t={
-
- id:Date.now(),
-
- type:document.getElementById("type").value,
-
- amount:Number(
- document.getElementById("amount").value
- ),
-
- date:document.getElementById("date").value,
-
- category:
- document.getElementById("category").value,
-
- description:
- document.getElementById("description").value,
-
- status:
- document.getElementById("status").value,
-
- recurrence:
- document.getElementById("recurrence").value
-
- };
-
- data.transactions.push(t);
-
- save();
-
- this.reset();
-
- document.getElementById("date").value =
- new Date().toISOString().slice(0,10);
-
- closeForm();
-
- render();
+password:lp.value
 
 });
 
 
-function signed(t){
- return t.type==="income"
- ? t.amount
- : -t.amount;
-}
+if(error){
 
+lm.textContent =
+"Connexion impossible. Vérifiez votre e-mail et votre mot de passe.";
 
-function balance(){
-
- return data.opening +
-
- data.transactions
- .filter(t=>t.status==="done")
- .reduce((a,t)=>a+signed(t),0);
+return;
 
 }
 
+lm.textContent = "";
 
-function forecast(days){
+user = data.user;
 
- let total=balance();
+show();
 
- const now=new Date();
-
- now.setHours(0,0,0,0);
-
- const limit=new Date(now);
-
- limit.setDate(
- limit.getDate()+days
- );
-
- data.transactions
- .filter(t=>t.status==="planned")
- .forEach(t=>{
-
- const d=new Date(
- t.date+"T12:00:00"
- );
-
- if(d>=now && d<=limit)
- total+=signed(t);
-
- });
-
- return total;
+await load();
 
 }
 
 
-function deleteItem(id){
+function show(){
 
- if(confirm("Supprimer cette opération ?")){
+login.classList.add("hidden");
 
- data.transactions =
- data.transactions.filter(t=>t.id!==id);
+app.classList.remove("hidden");
 
- save();
+u.classList.remove("hidden");
 
- render();
-
- }
+email.textContent = user.email;
 
 }
 
 
-function render(){
+async function logout(){
 
- const current=balance();
+await sb.auth.signOut();
 
- const now=new Date();
-
- let inc=0;
- let out=0;
-
- data.transactions
- .filter(t=>t.status==="done")
- .forEach(t=>{
-
- const d=new Date(
- t.date+"T12:00:00"
- );
-
- if(
- d.getMonth()===now.getMonth()
- &&
- d.getFullYear()===now.getFullYear()
- ){
-
- if(t.type==="income")
- inc+=t.amount;
- else
- out+=t.amount;
-
- }
-
- });
-
-
- document.getElementById("balance")
- .textContent=euro(current);
-
- document.getElementById("income")
- .textContent=euro(inc);
-
- document.getElementById("expenses")
- .textContent=euro(out);
-
- document.getElementById("available")
- .textContent=euro(forecast(30));
-
- document.getElementById("f7")
- .textContent=euro(forecast(7));
-
- document.getElementById("f15")
- .textContent=euro(forecast(15));
-
- document.getElementById("f30")
- .textContent=euro(forecast(30));
-
-
- const list=
- document.getElementById("list");
-
- list.innerHTML="";
-
-
- const sorted=[
- ...data.transactions
- ].sort(
- (a,b)=>b.date.localeCompare(a.date)
- );
-
-
- sorted.forEach(t=>{
-
- const tr=document.createElement("tr");
-
- tr.innerHTML=`
-
- <td>
- ${new Date(
- t.date+"T12:00:00"
- ).toLocaleDateString("fr-FR")}
- </td>
-
- <td>
- <strong>${t.description}</strong>
- ${t.recurrence==="monthly"
- ? '<span class="badge">mensuel</span>'
- : ""}
- </td>
-
- <td>${t.category}</td>
-
- <td>
- <span class="badge">
- ${t.status==="done"
- ? "Passé"
- : "À venir"}
- </span>
- </td>
-
- <td class="amount
- ${t.type==="income"
- ? "green"
- : "red"}">
-
- ${t.type==="income"
- ? "+"
- : "−"}
-
- ${euro(t.amount)}
-
- </td>
-
- <td>
- <button class="delete"
- onclick="deleteItem(${t.id})">
- ×
- </button>
- </td>
-
- `;
-
- list.appendChild(tr);
-
- });
-
-
- document.getElementById("empty")
- .style.display =
- sorted.length ? "none" : "block";
+location.reload();
 
 }
 
 
-function downloadBackup(){
+async function load(){
 
- const blob=
- new Blob(
- [JSON.stringify(data,null,2)],
- {type:"application/json"}
- );
-
- const a=document.createElement("a");
-
- a.href=URL.createObjectURL(blob);
-
- a.download=
- "sauvegarde-tresorerie.json";
-
- a.click();
-
-}
+const {data:s} =
+await sb
+.from("account_settings")
+.select("opening_balance")
+.eq("user_id",user.id)
+.maybeSingle();
 
 
-function exportCSV(){
+d.opening =
+s ? +s.opening_balance : 0;
 
- let csv=
- "Date;Type;Montant;Categorie;Libelle;Statut\n";
 
- data.transactions.forEach(t=>{
+const {data:r,error} =
+await sb
+.from("transactions")
+.select("*")
+.order(
+"operation_date",
+{ascending:false}
+);
 
- csv+=
- `${t.date};${t.type};${t.amount};${t.category};${t.description};${t.status}\n`;
 
- });
+if(error){
 
- const blob=
- new Blob(
- ["\ufeff"+csv],
- {type:"text/csv"}
- );
+alert(
+"Erreur de synchronisation : " +
+error.message
+);
 
- const a=document.createElement("a");
-
- a.href=URL.createObjectURL(blob);
-
- a.download=
- "carnet-tresorerie.csv";
-
- a.click();
+return;
 
 }
 
+
+d.transactions =
+(r || []).map(x => ({
+
+id:x.id,
+
+type:x.type,
+
+amount:+x.amount,
+
+date:x.operation_date,
+
+category:x.category,
+
+description:x.description,
+
+status:x.status,
+
+recurrence:x.recurrence
+
+}));
+
+
+opening.value =
+d.opening;
 
 render();
 
-</script>
+checkMigration();
 
+}function balance(){
+return d.opening +
+d.transactions
+.filter(x=>x.status==="done")
+.reduce((a,x)=>a+S(x),0);
+}
+
+function forecast(n){
+let t=balance();
+let now=new Date();
+now.setHours(0,0,0,0);
+
+let lim=new Date(now);
+lim.setDate(lim.getDate()+n);
+
+d.transactions
+.filter(x=>x.status==="planned")
+.forEach(x=>{
+let z=D(x.date);
+if(z>=now && z<=lim)t+=S(x);
+});
+
+return t;
+}
+
+function monthEnd(){
+let t=balance();
+let now=new Date();
+now.setHours(0,0,0,0);
+
+let end=new Date(
+now.getFullYear(),
+now.getMonth()+1,
+0
+);
+
+d.transactions
+.filter(x=>x.status==="planned")
+.forEach(x=>{
+let z=D(x.date);
+if(z>=now && z<=end)t+=S(x);
+});
+
+return t;
+}
+
+function render(){
+
+let now=new Date();
+let i=0;
+let o=0;
+
+d.transactions
+.filter(x=>x.status==="done")
+.forEach(x=>{
+
+let z=D(x.date);
+
+if(
+z.getMonth()===now.getMonth() &&
+z.getFullYear()===now.getFullYear()
+){
+
+if(x.type==="income"){
+i+=x.amount;
+}else{
+o+=x.amount;
+}
+
+}
+
+});
+
+bal.textContent=E(balance());
+inc.textContent=E(i);
+out.textContent=E(o);
+endm.textContent=E(monthEnd());
+
+f7.textContent=E(forecast(7));
+f15.textContent=E(forecast(15));
+f30.textContent=E(forecast(30));
+
+let today=new Date();
+today.setHours(0,0,0,0);
+
+let lim=new Date(today);
+lim.setDate(lim.getDate()+30);
+
+po.textContent=E(
+d.transactions
+.filter(x=>
+x.status==="planned" &&
+x.type==="expense" &&
+D(x.date)>=today &&
+D(x.date)<=lim
+)
+.reduce((a,x)=>a+x.amount,0)
+);
+
+list.innerHTML="";
+
+d.transactions.forEach(x=>{
+
+let tr=document.createElement("tr");
+
+let doneButton =
+x.status==="planned"
+?
+`<button onclick="done('${x.id}')">Débité</button>`
+:
+"";
+
+tr.innerHTML=`
+<td>${D(x.date).toLocaleDateString("fr-FR")}</td>
+<td>${x.description}</td>
+<td>${x.status==="done"?"Passé":"À venir"}</td>
+<td class="amt ${x.type==="income"?"g":"r"}">
+${x.type==="income"?"+":"−"} ${E(x.amount)}
+</td>
+<td>
+<button onclick="editOp('${x.id}')">Modifier</button>
+${doneButton}
+<button onclick="del('${x.id}')">×</button>
+</td>`;
+
+list.appendChild(tr);
+
+});
+
+}
+
+function newOp(){
+
+id.value="";
+
+amount.value="";
+desc.value="";
+
+date.value=
+new Date().toISOString().slice(0,10);
+
+type.value="expense";
+status.value="done";
+rec.value="none";
+
+form.classList.remove("hidden");
+
+}
+
+function closeOp(){
+form.classList.add("hidden");
+}
+
+function editOp(x){
+
+let t=
+d.transactions.find(a=>a.id===x);
+
+if(!t)return;
+
+id.value=t.id;
+type.value=t.type;
+amount.value=t.amount;
+date.value=t.date;
+cat.value=t.category;
+desc.value=t.description;
+status.value=t.status;
+rec.value=t.recurrence||"none";
+
+form.classList.remove("hidden");
+
+}
+
+async function saveOp(e){
+
+e.preventDefault();
+
+let p={
+
+user_id:user.id,
+type:type.value,
+amount:+amount.value,
+operation_date:date.value,
+category:cat.value,
+description:desc.value.trim(),
+status:status.value,
+recurrence:rec.value,
+updated_at:new Date().toISOString()
+
+};
+
+let error;
+
+if(id.value){
+
+({error}=
+await sb
+.from("transactions")
+.update(p)
+.eq("id",id.value));
+
+}else{
+
+({error}=
+await sb
+.from("transactions")
+.insert(p));
+
+}
+
+if(error){
+
+alert(
+"Impossible d'enregistrer : " +
+error.message
+);
+
+return;
+
+}
+
+closeOp();
+
+await load();
+
+}
+
+async function done(x){
+
+const {error}=
+await sb
+.from("transactions")
+.update({
+status:"done",
+updated_at:new Date().toISOString()
+})
+.eq("id",x);
+
+if(error){
+alert(error.message);
+return;
+}
+
+await load();
+
+}
+
+async function del(x){
+
+if(!confirm("Supprimer cette opération ?")){
+return;
+}
+
+const {error}=
+await sb
+.from("transactions")
+.delete()
+.eq("id",x);
+
+if(error){
+alert(error.message);
+return;
+}
+
+await load();
+
+}
+
+async function saveOpening(){
+
+const {error}=
+await sb
+.from("account_settings")
+.upsert({
+
+user_id:user.id,
+opening_balance:+opening.value||0,
+updated_at:new Date().toISOString()
+
+});
+
+if(error){
+alert(error.message);
+return;
+}
+
+await load();
+
+}
+
+function checkMigration(){
+
+let raw=
+localStorage.getItem(
+"monCarnetTresorerieV2"
+)
+||
+localStorage.getItem(
+"monCarnetTresorerie"
+);
+
+let mark=
+localStorage.getItem(
+"cloudMigrated_"+user.id
+);
+
+migrate.classList.toggle(
+"hidden",
+!(raw && !mark)
+);
+
+}
+
+async function migrateV2(){
+
+let raw=
+localStorage.getItem(
+"monCarnetTresorerieV2"
+)
+||
+localStorage.getItem(
+"monCarnetTresorerie"
+);
+
+if(!raw)return;
+
+if(
+d.transactions.length &&
+!confirm(
+"Le cloud contient déjà des opérations. Continuer l'importation ?"
+)
+){
+return;
+}
+
+let x;
+
+try{
+x=JSON.parse(raw);
+}catch{
+alert("Impossible de lire les données V2.");
+return;
+}
+
+if(x.opening!==undefined){
+
+await sb
+.from("account_settings")
+.upsert({
+
+user_id:user.id,
+opening_balance:+x.opening||0
+
+});
+
+}
+
+for(
+const t of (x.transactions||[])
+.filter(a=>!a.seriesRoot)
+){
+
+const {error}=
+await sb
+.from("transactions")
+.insert({
+
+user_id:user.id,
+type:t.type,
+amount:+t.amount,
+operation_date:t.date,
+category:t.category||"Autre",
+description:t.description||"Opération",
+status:t.status||"done",
+recurrence:t.recurrence||"none"
+
+});
+
+if(error){
+
+alert(
+"Erreur pendant l'importation : "+
+error.message
+);
+
+return;
+
+}
+
+}
+
+localStorage.setItem(
+"cloudMigrated_"+user.id,
+"1"
+);
+
+await load();
+
+alert(
+"Importation V2 terminée."
+);
+
+}
+
+window.addEventListener(
+"focus",
+()=>{
+if(user)load();
+}
+);
+
+init();
+
+</script>
 </body>
 </html>
