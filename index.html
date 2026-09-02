@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mon Carnet de Trésorerie</title>
+
+<style>
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:#f4f6f8;
+  color:#1f2937;
+}
+
+header {
+  background:#111827;
+  color:white;
+  padding:22px;
+}
+
+.header {
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+h1 { margin:0; font-size:23px; }
+header p { margin:5px 0 0; color:#cbd5e1; font-size:13px; }
+
+main {
+  max-width:1100px;
+  margin:25px auto;
+  padding:0 15px 50px;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.card {
+  background:white;
+  border-radius:16px;
+  padding:18px;
+  margin-bottom:15px;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+
+.label {
+  color:#6b7280;
+  font-size:13px;
+}
+
+.value {
+  font-size:28px;
+  font-weight:750;
+  margin-top:7px;
+}
+
+.green { color:#0f766e; }
+.red { color:#b91c1c; }
+.orange { color:#b45309; }
+
+button {
+  border:0;
+  border-radius:11px;
+  padding:11px 15px;
+  cursor:pointer;
+  font-weight:650;
+  font-size:14px;
+}
+
+.primary {
+  background:#111827;
+  color:white;
+}
+
+.secondary {
+  background:white;
+  border:1px solid #d1d5db;
+}
+
+.add {
+  background:white;
+  color:#111827;
+}
+
+form {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+input,select {
+  width:100%;
+  padding:11px;
+  border:1px solid #d1d5db;
+  border-radius:9px;
+  font-size:14px;
+}
+
+label {
+  font-size:12px;
+  font-weight:650;
+  display:block;
+  margin-bottom:5px;
+}
+
+.full { grid-column:1/-1; }
+
+.hidden { display:none; }
+
+.forecasts {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.forecast {
+  background:#f8fafc;
+  padding:15px;
+  border-radius:12px;
+}
+
+.forecast strong {
+  font-size:21px;
+  display:block;
+  margin-top:5px;
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td {
+  padding:11px 7px;
+  border-bottom:1px solid #e5e7eb;
+  text-align:left;
+}
+
+th {
+  color:#6b7280;
+  font-size:12px;
+}
+
+.amount {
+  text-align:right;
+  font-weight:700;
+}
+
+.toolbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:20px 0 12px;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.delete {
+  background:#fee2e2;
+  color:#991b1b;
+  padding:6px 9px;
+}
+
+.badge {
+  background:#f3f4f6;
+  border-radius:20px;
+  padding:4px 8px;
+  font-size:11px;
+}
+
+.actions {
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+}
+
+.settings {
+  display:flex;
+  gap:10px;
+  align-items:end;
+}
+
+.settings div { flex:1; }
+
+@media(max-width:800px) {
+  .grid { grid-template-columns:1fr 1fr; }
+}
+
+@media(max-width:600px) {
+  .grid,.forecasts { grid-template-columns:1fr; }
+  form { grid-template-columns:1fr; }
+  .full { grid-column:auto; }
+  .settings { display:block; }
+  .settings button { margin-top:10px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="header">
+
+<div>
+<h1>Mon Carnet de Trésorerie</h1>
+<p>Ce qui entre, ce qui sort et ce qu'il me reste réellement.</p>
+</div>
+
+<button class="add" onclick="openForm()">
++ Ajouter une opération
+</button>
+
+</div>
+</header>
+
+<main>
+
+<div class="grid">
+
+<div class="card">
+<div class="label">Solde actuel</div>
+<div class="value" id="balance">0 €</div>
+</div>
+
+<div class="card">
+<div class="label">Entrées ce mois</div>
+<div class="value green" id="income">0 €</div>
+</div>
+
+<div class="card">
+<div class="label">Sorties ce mois</div>
+<div class="value red" id="expenses">0 €</div>
+</div>
+
+<div class="card">
+<div class="label">Disponible dans 30 jours</div>
+<div class="value orange" id="available">0 €</div>
+</div>
+
+</div>
+
+
+<div class="card">
+
+<strong>Prévision de trésorerie</strong>
+
+<div class="forecasts" style="margin-top:15px">
+
+<div class="forecast">
+<span class="label">Dans 7 jours</span>
+<strong id="f7">0 €</strong>
+</div>
+
+<div class="forecast">
+<span class="label">Dans 15 jours</span>
+<strong id="f15">0 €</strong>
+</div>
+
+<div class="forecast">
+<span class="label">Dans 30 jours</span>
+<strong id="f30">0 €</strong>
+</div>
+
+</div>
+</div>
+
+
+<div id="formBox" class="card hidden">
+
+<h3>Nouvelle opération</h3>
+
+<form id="form">
+
+<div>
+<label>Entrée ou sortie</label>
+<select id="type">
+<option value="expense">Sortie</option>
+<option value="income">Entrée</option>
+</select>
+</div>
+
+<div>
+<label>Montant €</label>
+<input id="amount" type="number" step="0.01" required>
+</div>
+
+<div>
+<label>Date</label>
+<input id="date" type="date" required>
+</div>
+
+<div>
+<label>Catégorie</label>
+<select id="category">
+<option>Alimentation</option>
+<option>Maison</option>
+<option>Voiture</option>
+<option>Restaurant</option>
+<option>Santé</option>
+<option>Loisirs</option>
+<option>Abonnements</option>
+<option>Impôts / Taxes</option>
+<option>Revenus</option>
+<option>Virement</option>
+<option>Autre</option>
+</select>
+</div>
+
+<div class="full">
+<label>Libellé</label>
+<input id="description"
+placeholder="Ex : Courses Carrefour, salaire, assurance..."
+required>
+</div>
+
+<div>
+<label>Statut</label>
+<select id="status">
+<option value="done">Déjà passé sur mon compte</option>
+<option value="planned">À venir</option>
+</select>
+</div>
+
+<div>
+<label>Récurrence</label>
+<select id="recurrence">
+<option value="none">Aucune</option>
+<option value="monthly">Tous les mois</option>
+</select>
+</div>
+
+<div class="full actions">
+<button type="button" class="secondary"
+onclick="closeForm()">Annuler</button>
+
+<button class="primary">Enregistrer</button>
+</div>
+
+</form>
+</div>
+
+
+<div class="toolbar">
+<h3>Mon carnet de bord</h3>
+
+<div>
+<button class="secondary"
+onclick="downloadBackup()">Sauvegarder</button>
+
+<button class="secondary"
+onclick="exportCSV()">Exporter CSV</button>
+</div>
+</div>
+
+
+<div class="card">
+
+<table>
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Libellé</th>
+<th>Catégorie</th>
+<th>Statut</th>
+<th class="amount">Montant</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody id="list"></tbody>
+
+</table>
+
+<p id="empty"
+style="text-align:center;color:#6b7280">
+Aucune opération enregistrée.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h3>Réglages</h3>
+
+<div class="settings">
+
+<div>
+<label>Solde de départ de mon compte</label>
+<input id="opening"
+type="number"
+step="0.01"
+placeholder="Ex : 3500">
+</div>
+
+<button class="primary"
+onclick="saveOpening()">
+Enregistrer le solde
+</button>
+
+</div>
+
+<p style="font-size:12px;color:#6b7280">
+Indiquez ici le solde réel de votre compte au moment où vous commencez à utiliser le carnet.
+</p>
+
+</div>
+
+</main>
+
+
+<script>
+
+const KEY="monCarnetTresorerie";
+
+let data=JSON.parse(localStorage.getItem(KEY)) || {
+ opening:0,
+ transactions:[]
+};
+
+const euro=n =>
+ new Intl.NumberFormat("fr-FR",{
+ style:"currency",
+ currency:"EUR"
+ }).format(n || 0);
+
+document.getElementById("date").value =
+ new Date().toISOString().slice(0,10);
+
+document.getElementById("opening").value =
+ data.opening || 0;
+
+
+function save(){
+ localStorage.setItem(KEY,JSON.stringify(data));
+}
+
+
+function openForm(){
+ document.getElementById("formBox")
+ .classList.remove("hidden");
+}
+
+
+function closeForm(){
+ document.getElementById("formBox")
+ .classList.add("hidden");
+}
+
+
+function saveOpening(){
+
+ data.opening =
+ Number(document.getElementById("opening").value) || 0;
+
+ save();
+ render();
+
+ alert("Solde de départ enregistré.");
+}
+
+
+document.getElementById("form")
+.addEventListener("submit",function(e){
+
+ e.preventDefault();
+
+ const t={
+
+ id:Date.now(),
+
+ type:document.getElementById("type").value,
+
+ amount:Number(
+ document.getElementById("amount").value
+ ),
+
+ date:document.getElementById("date").value,
+
+ category:
+ document.getElementById("category").value,
+
+ description:
+ document.getElementById("description").value,
+
+ status:
+ document.getElementById("status").value,
+
+ recurrence:
+ document.getElementById("recurrence").value
+
+ };
+
+ data.transactions.push(t);
+
+ save();
+
+ this.reset();
+
+ document.getElementById("date").value =
+ new Date().toISOString().slice(0,10);
+
+ closeForm();
+
+ render();
+
+});
+
+
+function signed(t){
+ return t.type==="income"
+ ? t.amount
+ : -t.amount;
+}
+
+
+function balance(){
+
+ return data.opening +
+
+ data.transactions
+ .filter(t=>t.status==="done")
+ .reduce((a,t)=>a+signed(t),0);
+
+}
+
+
+function forecast(days){
+
+ let total=balance();
+
+ const now=new Date();
+
+ now.setHours(0,0,0,0);
+
+ const limit=new Date(now);
+
+ limit.setDate(
+ limit.getDate()+days
+ );
+
+ data.transactions
+ .filter(t=>t.status==="planned")
+ .forEach(t=>{
+
+ const d=new Date(
+ t.date+"T12:00:00"
+ );
+
+ if(d>=now && d<=limit)
+ total+=signed(t);
+
+ });
+
+ return total;
+
+}
+
+
+function deleteItem(id){
+
+ if(confirm("Supprimer cette opération ?")){
+
+ data.transactions =
+ data.transactions.filter(t=>t.id!==id);
+
+ save();
+
+ render();
+
+ }
+
+}
+
+
+function render(){
+
+ const current=balance();
+
+ const now=new Date();
+
+ let inc=0;
+ let out=0;
+
+ data.transactions
+ .filter(t=>t.status==="done")
+ .forEach(t=>{
+
+ const d=new Date(
+ t.date+"T12:00:00"
+ );
+
+ if(
+ d.getMonth()===now.getMonth()
+ &&
+ d.getFullYear()===now.getFullYear()
+ ){
+
+ if(t.type==="income")
+ inc+=t.amount;
+ else
+ out+=t.amount;
+
+ }
+
+ });
+
+
+ document.getElementById("balance")
+ .textContent=euro(current);
+
+ document.getElementById("income")
+ .textContent=euro(inc);
+
+ document.getElementById("expenses")
+ .textContent=euro(out);
+
+ document.getElementById("available")
+ .textContent=euro(forecast(30));
+
+ document.getElementById("f7")
+ .textContent=euro(forecast(7));
+
+ document.getElementById("f15")
+ .textContent=euro(forecast(15));
+
+ document.getElementById("f30")
+ .textContent=euro(forecast(30));
+
+
+ const list=
+ document.getElementById("list");
+
+ list.innerHTML="";
+
+
+ const sorted=[
+ ...data.transactions
+ ].sort(
+ (a,b)=>b.date.localeCompare(a.date)
+ );
+
+
+ sorted.forEach(t=>{
+
+ const tr=document.createElement("tr");
+
+ tr.innerHTML=`
+
+ <td>
+ ${new Date(
+ t.date+"T12:00:00"
+ ).toLocaleDateString("fr-FR")}
+ </td>
+
+ <td>
+ <strong>${t.description}</strong>
+ ${t.recurrence==="monthly"
+ ? '<span class="badge">mensuel</span>'
+ : ""}
+ </td>
+
+ <td>${t.category}</td>
+
+ <td>
+ <span class="badge">
+ ${t.status==="done"
+ ? "Passé"
+ : "À venir"}
+ </span>
+ </td>
+
+ <td class="amount
+ ${t.type==="income"
+ ? "green"
+ : "red"}">
+
+ ${t.type==="income"
+ ? "+"
+ : "−"}
+
+ ${euro(t.amount)}
+
+ </td>
+
+ <td>
+ <button class="delete"
+ onclick="deleteItem(${t.id})">
+ ×
+ </button>
+ </td>
+
+ `;
+
+ list.appendChild(tr);
+
+ });
+
+
+ document.getElementById("empty")
+ .style.display =
+ sorted.length ? "none" : "block";
+
+}
+
+
+function downloadBackup(){
+
+ const blob=
+ new Blob(
+ [JSON.stringify(data,null,2)],
+ {type:"application/json"}
+ );
+
+ const a=document.createElement("a");
+
+ a.href=URL.createObjectURL(blob);
+
+ a.download=
+ "sauvegarde-tresorerie.json";
+
+ a.click();
+
+}
+
+
+function exportCSV(){
+
+ let csv=
+ "Date;Type;Montant;Categorie;Libelle;Statut\n";
+
+ data.transactions.forEach(t=>{
+
+ csv+=
+ `${t.date};${t.type};${t.amount};${t.category};${t.description};${t.status}\n`;
+
+ });
+
+ const blob=
+ new Blob(
+ ["\ufeff"+csv],
+ {type:"text/csv"}
+ );
+
+ const a=document.createElement("a");
+
+ a.href=URL.createObjectURL(blob);
+
+ a.download=
+ "carnet-tresorerie.csv";
+
+ a.click();
+
+}
+
+
+render();
+
+</script>
+
+</body>
+</html>
