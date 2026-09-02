@@ -583,8 +583,8 @@ amount.value=t.amount;
 date.value=t.date;
 cat.value=t.category;
 desc.value=t.description;
-status.value=t.status;
-rec.value=t.recurrence||"none";
+document.getElementById("status").value=t.status;
+document.getElementById("rec").value=t.recurrence||"none";
 
 form.classList.remove("hidden");
 
@@ -602,8 +602,8 @@ amount:+amount.value,
 operation_date:date.value,
 category:cat.value,
 description:desc.value.trim(),
-status:status.value,
-recurrence:rec.value,
+status:document.getElementById("status").value,
+recurrence:document.getElementById("rec").value,
 updated_at:new Date().toISOString()
 
 };
